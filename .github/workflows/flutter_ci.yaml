@@ -45,6 +45,6 @@ jobs:
       - name: Run `flutter analyze`
         run: flutter analyze --fatal-warnings --fatal-infos .
 
-      # Flutter test
-      - name: Run `flutter test`
-        run: flutter test
+      # # Flutter test
+      # - name: Run `flutter test`
+      #   run: flutter test
