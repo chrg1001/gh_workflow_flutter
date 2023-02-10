@@ -28,17 +28,39 @@ jobs:
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
           cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
 
-      # Flutter pub dependency のキャッシュを確認 ( `pubspec.lock` のHash値で比較)
-      - name: Install or restore flutter pub dependencies
-        id: cache_flutter_pub
+      # pubspec dependencies をキャッシュ
+      - name: Cache pubspec dependencies
+        id: cache_pubspec_dependencies
         uses: actions/cache@v3
-        env:
-          cache-name: flutter_pub
         with:
-          path: ~/.pub-cache
-          key: ${{ matrix.os }}-${{ env.cache-name }}-${{ hashFiles('./pubspec.lock') }}
+          cache-name: pubspec_dependencies
+          path: |
+            ${{ env.FLUTTER_HOME }}/.pub-cache
+            **/.packages
+            **/.flutter-plugins
+            **/.flutter-plugin-dependencies
+            **/.dart_tool/package_config.json
+          key: ${{ matrix.os }}-${{ env.cache-name }}-${{ hashFiles('**/pubspec.lock') }}
 
-      # [Flutter pub dependency のキャッシュがない場合] Flutter pub の依存関係インストール
-      - name: Install flutter pub dependencies
-        if: steps.cache_flutter_pub.outputs.cache-hit != 'true'
+      # [pubspec dependenciesのキャッシュがない場合] pubspec dependencies をインストール
+      - name: Install pubspec dependencies
+        if: steps.cache_pubspec_dependencies.outputs.cache-hit != 'true'
         run: flutter pub get
+
+      # Build runner のビルド結果をキャッシュ
+      - name: Cache build runner
+        id: cache_build_runner
+        uses: actions/cache@v3
+        with:
+          cache-name: build_runner
+          path: |
+            **/.dart_tool/build
+            **/*.g.dart
+            **/*.freezed.dart
+            **/*.gr.dart
+          key: ${{ matrix.os }}-${{ env.cache-name }}-${{ hashFiles('**/asset_graph.json') }}-${{ hashFiles('**/pubspec.lock') }}
+
+      # [Build runner のビルド結果のキャッシュがない場合] Build runner でビルド
+      - name: Run build runner
+        if: steps.cache_build_runner.outputs.cache-hit != 'true'
+        run: flutter pub run build_runner build -d
