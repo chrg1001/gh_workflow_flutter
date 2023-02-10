@@ -16,8 +16,11 @@ jobs:
       - name: Checks-out repo
         uses: actions/checkout@v3
 
-      - uses: kuhnroyal/flutter-fvm-config-action@v1
-      - uses: subosito/flutter-action@v2
+      - name: Get flutter version & channel from fvm_config.json
+        uses: kuhnroyal/flutter-fvm-config-action@v1
+
+      - name: Install or restore flutter SDK
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: ${{ env.FLUTTER_CHANNEL }}
@@ -27,7 +30,7 @@ jobs:
           architecture: x64 # optional, x64 or arm64
 
       # Flutter pub dependency のキャッシュを確認 ( `pubspec.lock` のHash値で比較)
-      - name: Check if Flutter pub cache exist
+      - name: Install or restore flutter pub dependencies
         id: cache_flutter_pub
         uses: actions/cache@v3
         env:
@@ -37,6 +40,6 @@ jobs:
           key: ${{ matrix.os }}-${{ env.cache-name }}-${{ hashFiles('./pubspec.lock') }}
 
       # [Flutter pub dependency のキャッシュがない場合] Flutter pub の依存関係インストール
-      - name: Install dependencies
+      - name: Install flutter pub dependencies
         if: steps.cache_flutter_pub.outputs.cache-hit != 'true'
         run: flutter pub get
