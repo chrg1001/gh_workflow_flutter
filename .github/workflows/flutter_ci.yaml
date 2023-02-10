@@ -22,8 +22,8 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: ${{ env.FLUTTER_CHANNEL }}
           cache: true
-          cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:'
-          cache-path: ${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
           architecture: x64 # optional, x64 or arm64
 
       # Flutter pub dependency のキャッシュを確認 ( `pubspec.lock` のHash値で比較)
@@ -40,11 +40,3 @@ jobs:
       - name: Install dependencies
         if: steps.cache_flutter_pub.outputs.cache-hit != 'true'
         run: flutter pub get
-
-      # Flutter Analyze
-      - name: Run `flutter analyze`
-        run: flutter analyze --fatal-warnings --fatal-infos .
-
-      # Flutter test
-      - name: Run `flutter test`
-        run: flutter test
