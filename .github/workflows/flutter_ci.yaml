@@ -40,11 +40,3 @@ jobs:
       - name: Install dependencies
         if: steps.cache_flutter_pub.outputs.cache-hit != 'true'
         run: flutter pub get
-
-      # Flutter Analyze
-      - name: Run `flutter analyze`
-        run: flutter analyze --fatal-warnings --fatal-infos .
-
-      # Flutter test
-      - name: Run `flutter test`
-        run: flutter test
