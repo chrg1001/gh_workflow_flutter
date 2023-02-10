@@ -27,7 +27,6 @@ jobs:
           cache: true
           cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
           cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
-          architecture: x64 # optional, x64 or arm64
 
       # Flutter pub dependency のキャッシュを確認 ( `pubspec.lock` のHash値で比較)
       - name: Install or restore flutter pub dependencies
