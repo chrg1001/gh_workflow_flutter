@@ -63,4 +63,4 @@ jobs:
       # [Build runner のビルド結果のキャッシュがない場合] Build runner でビルド
       - name: Run build runner
         if: steps.cache_build_runner.outputs.cache-hit != 'true'
-        run: flutter pub run build_runner build -d
+        run: flutter pub run build_runner build
