@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   test:
@@ -33,14 +34,13 @@ jobs:
         id: cache_pubspec_dependencies
         uses: actions/cache@v3
         with:
-          cache-name: pubspec_dependencies
           path: |
             ${{ env.FLUTTER_HOME }}/.pub-cache
             **/.packages
             **/.flutter-plugins
             **/.flutter-plugin-dependencies
             **/.dart_tool/package_config.json
-          key: ${{ matrix.os }}-${{ env.cache-name }}-${{ hashFiles('**/pubspec.lock') }}
+          key: ${{ matrix.os }}-pubspec_dependencies-${{ hashFiles('**/pubspec.lock') }}
 
       # [pubspec dependenciesのキャッシュがない場合] pubspec dependencies をインストール
       - name: Install pubspec dependencies
@@ -52,13 +52,12 @@ jobs:
         id: cache_build_runner
         uses: actions/cache@v3
         with:
-          cache-name: build_runner
           path: |
             **/.dart_tool/build
             **/*.g.dart
             **/*.freezed.dart
             **/*.gr.dart
-          key: ${{ matrix.os }}-${{ env.cache-name }}-${{ hashFiles('**/asset_graph.json') }}-${{ hashFiles('**/pubspec.lock') }}
+          key: ${{ matrix.os }}-build_runner-${{ hashFiles('**/asset_graph.json') }}-${{ hashFiles('**/pubspec.lock') }}
 
       # [Build runner のビルド結果のキャッシュがない場合] Build runner でビルド
       - name: Run build runner
