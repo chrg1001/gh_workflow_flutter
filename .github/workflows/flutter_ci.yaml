@@ -59,7 +59,7 @@ jobs:
             **/*.gr.dart
           key: ${{ matrix.os }}-build_runner-${{ hashFiles('**/asset_graph.json') }}-${{ hashFiles('**/pubspec.lock') }}
 
-      # [Build runner のビルド結果のキャッシュがない場合] Build runner でビルド
+      # [Build runner のビルド結果のキャッシュがない場合] build_runner 実行
       - name: Run build runner
         if: steps.cache_build_runner.outputs.cache-hit != 'true'
         run: flutter pub run build_runner build
